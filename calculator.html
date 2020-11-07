@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Калькулятор</title>
+    <link href='styles.css' rel='stylesheet'>
+  </head>
+
+  <body>
+    <a name='top'></a>
+    <nav class="width100">
+      <a href='index.html'>Главная</a>
+      <a href='about.html'>О сайте</a>
+      <a href="calculator.html">Калькулятор</a>
+    </nav>
+
+    <article>
+      <h1>Калькулятор</h1>
+      <form>
+        <input type="text" name="first" placeholder="введите число" size="10" id="first">
+        <select id="sign">
+          <option value="+">+</option>
+          <option value="−">−</option>
+          <option value="×">×</option>
+          <option value="/">/</option>
+        </select>
+        <input type="text" name="second" placeholder="введите число" size="10" id="second">
+        <input type="button" name="button" value="=">
+        <span class="result" id="result">
+          0
+        </span>
+      </form>
+
+      <div id="result-story" class="result-story"></div>
+
+
+    </article>
+    <footer>
+      © Софья Галкина 2020
+    </footer>
+    <script>
+      var first = document.getElementById("first"),
+          second = document.getElementById("second"),
+          sign = document.getElementById("sign");
+
+      first.oninput = function(){
+        count();
+      }
+
+      second.oninput = function(){
+        count();
+      }
+
+      sign.oninput = function(){
+        count();
+      }
+
+      function count() {
+        var firstValue =  parseStringToInteger(first.value),
+            secondValue = parseStringToInteger(second.value),
+            signValue = sign.value,
+            result = 0;
+
+        if (signValue == "/" && secondValue == 0) {
+          alert("На ноль делить нельзя");
+          return;
+        }
+
+        result = getResult(firstValue, secondValue, signValue);
+        document.getElementById("result").innerHTML = result;
+        // addToStory(first, second, sign, result);
+      };
+
+      function parseStringToInteger(string) {
+        var integer = parseInt(string, 10);
+
+        if(isNaN(integer)){
+          return 0;
+        } else {
+          return integer;
+        }
+      };
+
+      function getResult(first, second, sign) {
+        var result = 0;
+
+        switch (sign) {
+          case "+":
+            result = first + second;
+            break;
+          case "−":
+            result = first - second;
+            break;
+          case '×':
+            result = first * second;
+            break;
+          default:
+            result = first / second;
+        }
+
+        return addDelimer(result);
+      };
+
+      function addToStory(first, second, sign, result) {
+        var newStory = addDelimer(first) + " " + sign + " " + addDelimer(second) + " = " + result + "<br>",
+            story = document.getElementById("result-story").innerHTML;
+
+        story = newStory + story;
+        document.getElementById("result-story").innerHTML = story;
+      }
+
+      function addDelimer(number) {
+        var isNegative = number < 0;
+
+        if(isNegative){
+          number = number * -1;
+        }
+
+        if (number < 1000) {
+          return isNegative ? '−' + number : number;
+        }
+
+        if (number < 1000000) {
+          var units = number % 1000,
+              thousands = (number - units) / 1000;
+
+          string = thousands + addZeros(units);
+          return isNegative ? '−' + string : string;
+        }
+
+        if (number < 1000000000) {
+          var units = number % 1000,
+              thousandsMore = (number - units) / 1000,
+              thousands = thousandsMore % 1000,
+              millions = (thousandsMore - thousands) / 1000;
+
+          string = millions + addZeros(thousands) + addZeros(units);
+          return isNegative ? '−' + string : string;
+        }
+
+        var units = number % 1000,
+            thousandsMore = (number - units) / 1000,
+            thousands = thousandsMore % 1000,
+            millionsMore = (thousandsMore - thousands) / 1000,
+            millions = millionsMore % 1000,
+            billions = (millionsMore - millions) / 1000;
+
+        string = billions + addZeros(millions) + addZeros(thousands) + addZeros(units);
+        return isNegative ? '−' + string : string;
+      }
+
+      function addZeros(number) {
+        if(number == 0) {
+          return " 000";
+        }
+        if(number < 10) {
+          return " 00" + number;
+        }
+        if(number < 100) {
+          return " 0" + number;
+        }
+        return ' ' + number;
+      }
+    </script>
+  </body>
+</html>
